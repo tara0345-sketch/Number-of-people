@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>구역별 스프레드시트 이동</title>
     <style>
-        /* 기본 배경을 차분한 연회색으로 하여 눈의 피로를 덜고 버튼이 돋보이게 함 */
         body { 
             font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; 
             margin: 0; 
@@ -16,7 +15,6 @@
             align-items: center; 
         }
         
-        /* 앱 다운로드 섹션: 카드 형태로 깔끔하게 묶음 */
         .download-section { 
             width: 100%; 
             max-width: 500px; 
@@ -30,100 +28,49 @@
             margin-bottom: 30px; 
             box-sizing: border-box;
         }
-        .download-text {
-            font-weight: 800; 
-            font-size: 16px; 
-            color: #334155; 
-        }
-        .download-links {
-            display: flex;
-            gap: 10px;
-        }
+        .download-text { font-weight: 800; font-size: 16px; color: #334155; }
+        .download-links { display: flex; gap: 10px; }
         .download-links img { height: 38px; cursor: pointer; }
 
-        /* 메인 제목: 크고 진하게 */
         h2 { 
-            margin-top: 10px;
-            margin-bottom: 25px; 
-            font-size: 26px; 
-            font-weight: 900;
-            color: #1e293b; 
-            text-align: center; 
-            letter-spacing: -0.5px;
+            margin-top: 10px; margin-bottom: 25px; 
+            font-size: 26px; font-weight: 900; color: #1e293b; 
+            text-align: center; letter-spacing: -0.5px;
         }
 
-        /* 아코디언 전체 영역 */
         #accordion { 
-            width: 100%; 
-            max-width: 500px; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 16px; 
+            width: 100%; max-width: 500px; 
+            display: flex; flex-direction: column; gap: 16px; 
         }
 
-        /* 교구 메인 버튼: 큼직하고 명확한 짙은 파란색 (신뢰감 & 높은 대비) */
         .parish-btn { 
-            width: 100%; 
-            background-color: #1d4ed8; 
-            color: white; 
-            border: none; 
-            padding: 22px 24px; 
-            font-size: 20px; 
-            font-weight: 800; 
-            border-radius: 16px; 
-            text-align: left; 
-            cursor: pointer; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            box-shadow: 0 4px 12px rgba(29, 78, 216, 0.2); 
-            transition: all 0.2s ease;
-            letter-spacing: 1px;
+            width: 100%; background-color: #1d4ed8; color: white; 
+            border: none; padding: 22px 24px; font-size: 20px; 
+            font-weight: 800; border-radius: 16px; text-align: left; 
+            cursor: pointer; display: flex; justify-content: space-between; 
+            align-items: center; box-shadow: 0 4px 12px rgba(29, 78, 216, 0.2); 
+            transition: all 0.2s ease; letter-spacing: 1px;
         }
         .parish-btn:active { transform: scale(0.98); }
-        
-        /* 우측 화살표 아이콘 */
-        .parish-btn::after { 
-            content: '▼'; 
-            font-size: 16px; 
-            transition: transform 0.3s ease; 
-            opacity: 0.8;
-        }
+        .parish-btn::after { content: '▼'; font-size: 16px; transition: transform 0.3s ease; opacity: 0.8; }
         .parish-btn.active::after { transform: rotate(180deg); }
 
-        /* 숨겨진 구역 버튼 영역: 펼쳐질 때 부드러운 하얀색 배경 */
         .districts-container { 
-            display: none; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 12px; 
-            padding: 25px 20px 20px; 
-            background-color: white; 
-            border-radius: 0 0 16px 16px; 
-            margin-top: -15px; /* 교구 버튼과 자연스럽게 이어지도록 */
+            display: none; grid-template-columns: 1fr 1fr; gap: 12px; 
+            padding: 25px 20px 20px; background-color: white; 
+            border-radius: 0 0 16px 16px; margin-top: -15px; 
             box-shadow: 0 4px 10px rgba(0,0,0,0.03); 
         }
         .districts-container.show { display: grid; }
 
-        /* 개별 구역 이동 버튼: 오터치를 막기 위해 큼직하게, 테두리로 명확하게 구분 */
         .district-link { 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 16px 0; 
-            background-color: #f8fafc; 
-            color: #0f172a; 
-            text-decoration: none; 
-            border-radius: 12px; 
-            font-weight: 800; 
-            font-size: 17px; 
-            border: 2px solid #e2e8f0; /* 어르신들이 버튼의 경계를 명확히 인지하도록 굵은 테두리 */
-            transition: all 0.2s; 
+            display: flex; justify-content: center; align-items: center;
+            padding: 16px 0; background-color: #f8fafc; color: #0f172a; 
+            text-decoration: none; border-radius: 12px; font-weight: 800; 
+            font-size: 17px; border: 2px solid #e2e8f0; transition: all 0.2s; 
         }
-        /* 버튼 눌렀을 때 반응 */
         .district-link:active { 
-            background-color: #e2e8f0; 
-            border-color: #cbd5e1;
-            transform: scale(0.97);
+            background-color: #e2e8f0; border-color: #cbd5e1; transform: scale(0.97);
         }
     </style>
 </head>
@@ -185,7 +132,7 @@
                 link.className = "district-link";
                 link.href = `${sheetBaseUrl}${gidNum}#gid=${gidNum}`;
                 link.target = "_blank";
-                link.textContent = area; // "이동" 글씨를 빼서 더 크고 깔끔하게
+                link.textContent = area; 
                 districtsDiv.appendChild(link);
             });
 
@@ -201,6 +148,12 @@
                 if (!isAlreadyActive) {
                     this.classList.add("active");
                     districtsDiv.classList.add("show");
+
+                    // ✨ 자동 스크롤 기능 ✨
+                    // 목록이 펼쳐질 시간을 아주 잠깐(0.1초) 기다린 후 부드럽게 스크롤을 내립니다.
+                    setTimeout(() => {
+                        districtsDiv.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                    }, 100);
                 }
             });
 
