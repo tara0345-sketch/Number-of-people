@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>구역별 스프레드시트 이동</title>
     <style>
+        /* 💡 수정됨: 모바일 화면 바닥에 부딪히지 않도록 맨 아래 여백(padding-bottom)을 150px로 아주 넉넉하게 늘렸습니다! */
         body { 
             font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; 
             margin: 0; 
-            padding: 20px 15px 40px; 
+            padding: 20px 15px 150px; 
             background-color: #f0f4f8; 
             display: flex; 
             flex-direction: column; 
@@ -149,11 +150,10 @@
                     this.classList.add("active");
                     districtsDiv.classList.add("show");
 
-                    // ✨ 자동 스크롤 기능 ✨
-                    // 목록이 펼쳐질 시간을 아주 잠깐(0.1초) 기다린 후 부드럽게 스크롤을 내립니다.
+                    // 💡 수정됨: 스크롤 기준을 버튼과 구역 전체를 감싸는 wrapper로 변경하고, 화면 중앙(center)으로 오게 설정했습니다.
                     setTimeout(() => {
-                        districtsDiv.scrollIntoView({ behavior: "smooth", block: "nearest" });
-                    }, 100);
+                        wrapper.scrollIntoView({ behavior: "smooth", block: "center" });
+                    }, 150);
                 }
             });
 
