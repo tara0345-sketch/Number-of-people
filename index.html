@@ -2,49 +2,159 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>구역별 스프레드시트 이동</title>
     <style>
-        body { font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; margin: 0; padding: 40px 20px; display: flex; flex-direction: column; align-items: center; }
-        .download-section { width: 100%; max-width: 800px; display: flex; justify-content: flex-end; align-items: center; gap: 15px; margin-bottom: 40px; font-weight: bold; font-size: 18px; }
-        .download-section img { height: 45px; cursor: pointer; }
-        h2 { margin-bottom: 40px; font-size: 28px; }
-        #links { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 80px; max-width: 600px; width: 100%; }
-        .link-container { display: flex; justify-content: center; }
-        .button { display: inline-block; width: 180px; padding: 12px 0; background-color: #0d6efd; color: white; text-decoration: none; text-align: center; border-radius: 6px; font-weight: bold; font-size: 16px; transition: background-color 0.2s ease-in-out; }
-        .button:hover { background-color: #0b5ed7; }
+        /* 기본 배경을 차분한 연회색으로 하여 눈의 피로를 덜고 버튼이 돋보이게 함 */
+        body { 
+            font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; 
+            margin: 0; 
+            padding: 20px 15px 40px; 
+            background-color: #f0f4f8; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+        }
+        
+        /* 앱 다운로드 섹션: 카드 형태로 깔끔하게 묶음 */
+        .download-section { 
+            width: 100%; 
+            max-width: 500px; 
+            background: white;
+            padding: 15px 20px;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 30px; 
+            box-sizing: border-box;
+        }
+        .download-text {
+            font-weight: 800; 
+            font-size: 16px; 
+            color: #334155; 
+        }
+        .download-links {
+            display: flex;
+            gap: 10px;
+        }
+        .download-links img { height: 38px; cursor: pointer; }
+
+        /* 메인 제목: 크고 진하게 */
+        h2 { 
+            margin-top: 10px;
+            margin-bottom: 25px; 
+            font-size: 26px; 
+            font-weight: 900;
+            color: #1e293b; 
+            text-align: center; 
+            letter-spacing: -0.5px;
+        }
+
+        /* 아코디언 전체 영역 */
+        #accordion { 
+            width: 100%; 
+            max-width: 500px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 16px; 
+        }
+
+        /* 교구 메인 버튼: 큼직하고 명확한 짙은 파란색 (신뢰감 & 높은 대비) */
+        .parish-btn { 
+            width: 100%; 
+            background-color: #1d4ed8; 
+            color: white; 
+            border: none; 
+            padding: 22px 24px; 
+            font-size: 20px; 
+            font-weight: 800; 
+            border-radius: 16px; 
+            text-align: left; 
+            cursor: pointer; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 4px 12px rgba(29, 78, 216, 0.2); 
+            transition: all 0.2s ease;
+            letter-spacing: 1px;
+        }
+        .parish-btn:active { transform: scale(0.98); }
+        
+        /* 우측 화살표 아이콘 */
+        .parish-btn::after { 
+            content: '▼'; 
+            font-size: 16px; 
+            transition: transform 0.3s ease; 
+            opacity: 0.8;
+        }
+        .parish-btn.active::after { transform: rotate(180deg); }
+
+        /* 숨겨진 구역 버튼 영역: 펼쳐질 때 부드러운 하얀색 배경 */
+        .districts-container { 
+            display: none; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 12px; 
+            padding: 25px 20px 20px; 
+            background-color: white; 
+            border-radius: 0 0 16px 16px; 
+            margin-top: -15px; /* 교구 버튼과 자연스럽게 이어지도록 */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03); 
+        }
+        .districts-container.show { display: grid; }
+
+        /* 개별 구역 이동 버튼: 오터치를 막기 위해 큼직하게, 테두리로 명확하게 구분 */
+        .district-link { 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px 0; 
+            background-color: #f8fafc; 
+            color: #0f172a; 
+            text-decoration: none; 
+            border-radius: 12px; 
+            font-weight: 800; 
+            font-size: 17px; 
+            border: 2px solid #e2e8f0; /* 어르신들이 버튼의 경계를 명확히 인지하도록 굵은 테두리 */
+            transition: all 0.2s; 
+        }
+        /* 버튼 눌렀을 때 반응 */
+        .district-link:active { 
+            background-color: #e2e8f0; 
+            border-color: #cbd5e1;
+            transform: scale(0.97);
+        }
     </style>
 </head>
 <body>
 
     <div class="download-section">
-        <span>앱 다운로드</span>
-        <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.docs.editors.sheets" target="_blank">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Google Play">
-        </a>
-        <a href="https://apps.apple.com/kr/app/google-sheets/id842849113" target="_blank">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" alt="App Store">
-        </a>
+        <span class="download-text">스프레드시트 앱</span>
+        <div class="download-links">
+            <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.docs.editors.sheets" target="_blank">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Google Play">
+            </a>
+            <a href="https://apps.apple.com/kr/app/google-sheets/id842849113" target="_blank">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" alt="App Store">
+            </a>
+        </div>
     </div>
 
-    <h2>구역별 스프레드시트 이동</h2>
-    <div id="links"></div>
+    <h2>구역별 시트 이동</h2>
+    
+    <div id="accordion"></div>
 
     <script>
-        // 새로 알려주신 스프레드시트 주소 적용
-        const sheetBaseUrl = "https://docs.google.com/spreadsheets/d/13TYa_VvYxo4j-QAB5rnS_li6hpTrIBQ8nbmJ7yIrbLU/edit#gid=";
-        const areas = ["11구역", "12구역", "13구역", "14구역", "21구역", "22구역", "23구역", "24구역",
-                        "31구역", "32구역", "33구역", "34구역", "41구역", "42구역", "43구역", "44구역",
-                        "51구역", "52구역", "53구역", "54구역"];
-
-        const linksDiv = document.getElementById("links");
+        const sheetBaseUrl = "https://docs.google.com/spreadsheets/d/13TYa_VvYxo4j-QAB5rnS_li6hpTrIBQ8nbmJ7yIrbLU/edit?gid=";
         
-        areas.forEach(area => {
-            const div = document.createElement("div");
-            div.classList.add("link-container");
-            div.innerHTML = `<a class="button" href="${sheetBaseUrl}${getGid(area)}" target="_blank">${area} 이동</a>`;
-            linksDiv.appendChild(div);
-        });
+        const churchStructure = {
+            "1교구": ["11구역", "12구역", "13구역", "14구역"],
+            "2교구": ["21구역", "22구역", "23구역", "24구역"],
+            "3교구": ["31구역", "32구역", "33구역", "34구역"],
+            "4교구": ["41구역", "42구역", "43구역", "44구역"],
+            "5교구": ["51구역", "52구역", "53구역", "54구역"]
+        };
 
         function getGid(area) {
             const gids = {
@@ -55,6 +165,48 @@
                 "51구역": 786508486, "52구역": 1920099514, "53구역": 869821696, "54구역": 703456572
             };
             return gids[area] || 0;
+        }
+
+        const accordionDiv = document.getElementById("accordion");
+
+        for (const [parish, districts] of Object.entries(churchStructure)) {
+            const wrapper = document.createElement("div");
+
+            const parishBtn = document.createElement("button");
+            parishBtn.className = "parish-btn";
+            parishBtn.textContent = parish;
+            
+            const districtsDiv = document.createElement("div");
+            districtsDiv.className = "districts-container";
+
+            districts.forEach(area => {
+                const gidNum = getGid(area);
+                const link = document.createElement("a");
+                link.className = "district-link";
+                link.href = `${sheetBaseUrl}${gidNum}#gid=${gidNum}`;
+                link.target = "_blank";
+                link.textContent = area; // "이동" 글씨를 빼서 더 크고 깔끔하게
+                districtsDiv.appendChild(link);
+            });
+
+            parishBtn.addEventListener("click", function() {
+                const isAlreadyActive = this.classList.contains("active");
+
+                const allBtns = document.querySelectorAll(".parish-btn");
+                const allContainers = document.querySelectorAll(".districts-container");
+                
+                allBtns.forEach(btn => btn.classList.remove("active"));
+                allContainers.forEach(container => container.classList.remove("show"));
+
+                if (!isAlreadyActive) {
+                    this.classList.add("active");
+                    districtsDiv.classList.add("show");
+                }
+            });
+
+            wrapper.appendChild(parishBtn);
+            wrapper.appendChild(districtsDiv);
+            accordionDiv.appendChild(wrapper);
         }
     </script>
 </body>
