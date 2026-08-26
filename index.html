@@ -93,8 +93,8 @@
     <div id="accordion"></div>
 
     <script>
-        // 💡 수정됨: 새로운 스프레드시트 주소로 변경되었습니다.
-        const sheetBaseUrl = "https://docs.google.com/spreadsheets/d/1toU6O4cph0x7dxpeabwS_J7Uju2FBCpS5pc7jM8Idv4/edit?gid=";
+        // 💡 수정됨: URL 뒷부분을 #gid= 로 깔끔하게 정리했습니다.
+        const sheetBaseUrl = "https://docs.google.com/spreadsheets/d/1toU6O4cph0x7dxpeabwS_J7Uju2FBCpS5pc7jM8Idv4/edit#gid=";
         
         const churchStructure = {
             "1교구": ["11구역", "12구역", "13구역", "14구역"],
@@ -105,8 +105,7 @@
         };
 
         function getGid(area) {
-            // ⚠️ 주의: 새 시트로 옮기면서 각 구역 탭의 고유 번호(gid)가 바뀌었을 수 있습니다.
-            // 링크를 눌렀을 때 엉뚱한 화면이 나온다면, 아래 번호들을 새 시트의 탭 번호로 바꿔주셔야 합니다.
+            // 뽑아주신 gid 번호들이 정확하게 반영되어 있습니다.
             const gids = {
                 "11구역": 396997134, "12구역": 1593202344, "13구역": 1984506026, "14구역": 1327914051,
                 "21구역": 1926118862, "22구역": 2071693966, "23구역": 329402956, "24구역": 112435682,
@@ -133,7 +132,8 @@
                 const gidNum = getGid(area);
                 const link = document.createElement("a");
                 link.className = "district-link";
-                link.href = `${sheetBaseUrl}${gidNum}#gid=${gidNum}`;
+                // 💡 수정됨: 링크를 조합할 때 깔끔하게 baseUrl과 gidNum만 합치도록 변경했습니다.
+                link.href = `${sheetBaseUrl}${gidNum}`;
                 link.target = "_blank";
                 link.textContent = area; 
                 districtsDiv.appendChild(link);
