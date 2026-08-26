@@ -2,98 +2,267 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>구역별 스프레드시트 이동</title>
+    <!-- 최고급 가독성을 자랑하는 Pretendard 폰트 적용 -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
     <style>
-        body { 
-            font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; 
-            margin: 0; 
-            padding: 20px 15px 150px; 
-            background-color: #f0f4f8; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
+        :root {
+            --primary: #2563eb;
+            --primary-light: #eff6ff;
+            --surface: rgba(255, 255, 255, 0.75);
+            --text-main: #0f172a;
+            --text-sub: #64748b;
+            --border: rgba(255, 255, 255, 0.6);
+            --shadow: 0 8px 32px rgba(15, 23, 42, 0.06);
         }
         
-        .download-section { 
-            width: 100%; 
-            max-width: 500px; 
-            background: white;
-            padding: 15px 20px;
-            border-radius: 16px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        body { 
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            margin: 0; 
+            padding: 0;
+            background: #f8fafc;
+            /* 은은하고 세련된 메쉬 그라데이션 배경 */
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(217,100%,94%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(210,100%,96%,1) 0, transparent 50%);
+            background-attachment: fixed;
             display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 30px; 
-            box-sizing: border-box;
+            flex-direction: column; 
+            align-items: center;
+            min-height: 100vh;
+            -webkit-tap-highlight-color: transparent;
         }
-        .download-text { font-weight: 800; font-size: 16px; color: #334155; }
-        .download-links { display: flex; gap: 10px; }
-        .download-links img { height: 38px; cursor: pointer; }
+
+        .header-area {
+            text-align: center;
+            padding: 50px 20px 30px;
+            width: 100%;
+            box-sizing: border-box;
+            animation: fadeDown 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
 
         h2 { 
-            margin-top: 10px; margin-bottom: 25px; 
-            font-size: 26px; font-weight: 900; color: #1e293b; 
-            text-align: center; letter-spacing: -0.5px;
+            margin: 0;
+            font-size: 28px; 
+            font-weight: 800; 
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #0f172a 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .header-sub {
+            margin-top: 8px;
+            font-size: 15px;
+            color: var(--text-sub);
+            font-weight: 500;
         }
 
-        #accordion { 
-            width: 100%; max-width: 500px; 
-            display: flex; flex-direction: column; gap: 16px; 
+        .container {
+            width: 100%;
+            max-width: 480px;
+            padding: 0 20px 100px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* 프리미엄 앱 다운로드 배너 */
+        .app-banner {
+            background: var(--surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            margin-bottom: 10px;
+            animation: fadeUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s both;
+        }
+        
+        .app-banner-info { display: flex; flex-direction: column; gap: 4px; }
+        .app-banner-title { font-weight: 700; font-size: 16px; color: var(--text-main); }
+        .app-banner-desc { font-size: 13px; color: var(--text-sub); font-weight: 500;}
+        .store-icons { display: flex; gap: 8px; }
+        .store-icons img { height: 34px; border-radius: 8px; transition: transform 0.2s; }
+        .store-icons img:active { transform: scale(0.92); }
+
+        /* 아코디언 카드 디자인 (글래스모피즘) */
+        .accordion-item {
+            background: var(--surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: fadeUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s both;
+        }
+        
+        .accordion-item.active {
+            border-color: rgba(37, 99, 235, 0.3);
+            box-shadow: 0 16px 40px rgba(37, 99, 235, 0.12);
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.95);
         }
 
         .parish-btn { 
-            width: 100%; background-color: #1d4ed8; color: white; 
-            border: none; padding: 22px 24px; font-size: 20px; 
-            font-weight: 800; border-radius: 16px; text-align: left; 
-            cursor: pointer; display: flex; justify-content: space-between; 
-            align-items: center; box-shadow: 0 4px 12px rgba(29, 78, 216, 0.2); 
-            transition: all 0.2s ease; letter-spacing: 1px;
+            width: 100%;
+            background: transparent;
+            color: var(--text-main); 
+            border: none; 
+            padding: 22px 24px;
+            font-size: 18px; 
+            font-weight: 700; 
+            text-align: left; 
+            cursor: pointer; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            outline: none;
         }
-        .parish-btn:active { transform: scale(0.98); }
-        .parish-btn::after { content: '▼'; font-size: 16px; transition: transform 0.3s ease; opacity: 0.8; }
-        .parish-btn.active::after { transform: rotate(180deg); }
-
-        .districts-container { 
-            display: none; grid-template-columns: 1fr 1fr; gap: 12px; 
-            padding: 25px 20px 20px; background-color: white; 
-            border-radius: 0 0 16px 16px; margin-top: -15px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.03); 
+        
+        .parish-btn-content {
+            display: flex;
+            align-items: center;
+            gap: 14px;
         }
-        .districts-container.show { display: grid; }
+        
+        .parish-icon {
+            width: 38px;
+            height: 38px;
+            background: var(--primary-light);
+            color: var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 800;
+            transition: all 0.3s ease;
+        }
+        
+        .active .parish-icon {
+            background: var(--primary);
+            color: white;
+            transform: rotate(5deg) scale(1.05);
+        }
 
+        .chevron {
+            width: 24px;
+            height: 24px;
+            fill: var(--text-sub);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .active .chevron {
+            transform: rotate(180deg);
+            fill: var(--primary);
+        }
+
+        /* 스무스한 펼침 애니메이션 (Grid 트릭 사용) */
+        .districts-wrapper {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .active .districts-wrapper {
+            grid-template-rows: 1fr;
+        }
+
+        .districts-inner { overflow: hidden; }
+        
+        .districts-grid {
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 12px; 
+            padding: 0 24px 24px;
+        }
+
+        /* 구역 버튼 디자인 */
         .district-link { 
-            display: flex; justify-content: center; align-items: center;
-            padding: 16px 0; background-color: #f8fafc; color: #0f172a; 
-            text-decoration: none; border-radius: 12px; font-weight: 800; 
-            font-size: 17px; border: 2px solid #e2e8f0; transition: all 0.2s; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            gap: 8px;
+            padding: 16px 0; 
+            background: #ffffff; 
+            color: var(--text-main); 
+            text-decoration: none; 
+            border-radius: 14px; 
+            font-weight: 700; 
+            font-size: 16px; 
+            border: 1px solid rgba(0,0,0,0.04);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
+        
+        .district-link::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--primary);
+            border-radius: 50%;
+            opacity: 0.3;
+            transition: all 0.2s;
+        }
+
         .district-link:active { 
-            background-color: #e2e8f0; border-color: #cbd5e1; transform: scale(0.97);
+            background: var(--primary-light); 
+            border-color: rgba(37, 99, 235, 0.2); 
+            transform: scale(0.96);
+            color: var(--primary);
+        }
+        .district-link:active::before {
+            opacity: 1;
+            transform: scale(1.5);
+        }
+
+        /* 최초 로딩 애니메이션 */
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
 
-    <div class="download-section">
-        <span class="download-text">스프레드시트 앱</span>
-        <div class="download-links">
-            <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.docs.editors.sheets" target="_blank">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Google Play">
-            </a>
-            <a href="https://apps.apple.com/kr/app/google-sheets/id842849113" target="_blank">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" alt="App Store">
-            </a>
-        </div>
+    <div class="header-area">
+        <h2>구역 참석 체크</h2>
+        <div class="header-sub">구역별 스프레드시트로 간편하게 이동하세요</div>
     </div>
 
-    <h2>구역별 시트 이동</h2>
-    
-    <div id="accordion"></div>
+    <div class="container">
+        <div class="app-banner">
+            <div class="app-banner-info">
+                <span class="app-banner-title">스프레드시트 앱 열기</span>
+                <span class="app-banner-desc">모바일 편집을 위해 앱을 설치해 주세요</span>
+            </div>
+            <div class="store-icons">
+                <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.docs.editors.sheets" target="_blank">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Google Play">
+                </a>
+                <a href="https://apps.apple.com/kr/app/google-sheets/id842849113" target="_blank">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" alt="App Store">
+                </a>
+            </div>
+        </div>
+        
+        <div id="accordion"></div>
+    </div>
 
     <script>
-        // 💡 핵심 수정됨: 알려주신 새로운 스프레드시트 주소로 완벽하게 변경했습니다.
         const sheetBaseUrl = "https://docs.google.com/spreadsheets/d/1AbuhBqFgZw2S6fnvCp_ibXZ4vC6UOVlVE8Yv795Chdg/edit#gid=";
         
         const churchStructure = {
@@ -117,15 +286,37 @@
 
         const accordionDiv = document.getElementById("accordion");
 
+        // 부드러운 화살표 SVG 아이콘
+        const chevronSvg = `<svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>`;
+
+        let delayCount = 3; // 등장 애니메이션 순서용 딜레이
+
         for (const [parish, districts] of Object.entries(churchStructure)) {
             const wrapper = document.createElement("div");
+            wrapper.className = "accordion-item";
+            wrapper.style.animationDelay = `${delayCount * 0.1}s`;
+            delayCount++;
 
             const parishBtn = document.createElement("button");
             parishBtn.className = "parish-btn";
-            parishBtn.textContent = parish;
             
-            const districtsDiv = document.createElement("div");
-            districtsDiv.className = "districts-container";
+            // 프리미엄 디자인을 위한 내부 아이콘 구조
+            parishBtn.innerHTML = `
+                <div class="parish-btn-content">
+                    <div class="parish-icon">${parish.replace('교구', '')}</div>
+                    <span>${parish}</span>
+                </div>
+                ${chevronSvg}
+            `;
+            
+            const districtsWrapper = document.createElement("div");
+            districtsWrapper.className = "districts-wrapper";
+            
+            const districtsInner = document.createElement("div");
+            districtsInner.className = "districts-inner";
+
+            const districtsGrid = document.createElement("div");
+            districtsGrid.className = "districts-grid";
 
             districts.forEach(area => {
                 const gidNum = getGid(area);
@@ -134,30 +325,30 @@
                 link.href = `${sheetBaseUrl}${gidNum}`;
                 link.target = "_blank";
                 link.textContent = area; 
-                districtsDiv.appendChild(link);
+                districtsGrid.appendChild(link);
             });
 
-            parishBtn.addEventListener("click", function() {
-                const isAlreadyActive = this.classList.contains("active");
+            districtsInner.appendChild(districtsGrid);
+            districtsWrapper.appendChild(districtsInner);
 
-                const allBtns = document.querySelectorAll(".parish-btn");
-                const allContainers = document.querySelectorAll(".districts-container");
+            parishBtn.addEventListener("click", function() {
+                const isAlreadyActive = wrapper.classList.contains("active");
+                const allItems = document.querySelectorAll(".accordion-item");
                 
-                allBtns.forEach(btn => btn.classList.remove("active"));
-                allContainers.forEach(container => container.classList.remove("show"));
+                allItems.forEach(item => item.classList.remove("active"));
 
                 if (!isAlreadyActive) {
-                    this.classList.add("active");
-                    districtsDiv.classList.add("show");
-
+                    wrapper.classList.add("active");
+                    
+                    // 펼쳐질 때 부드럽게 화면 중앙으로 스크롤 이동
                     setTimeout(() => {
                         wrapper.scrollIntoView({ behavior: "smooth", block: "center" });
-                    }, 150);
+                    }, 250);
                 }
             });
 
             wrapper.appendChild(parishBtn);
-            wrapper.appendChild(districtsDiv);
+            wrapper.appendChild(districtsWrapper);
             accordionDiv.appendChild(wrapper);
         }
     </script>
